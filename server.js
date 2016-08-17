@@ -25,6 +25,27 @@ app.get('/todos', function(req,res){
 });
 
 //GET /todos/:id
+app.get('/todos/:id', function(req, res){
+	var todoId = parseInt(req.params.id, 10);
+	var matchedId;
+	//iterate over todos array looking for a match
+	todos.forEach(function(todo){
+		if(todoId === todo.id){
+			matchedId = todo;
+		}
+	});
+	if(matchedId){
+		res.json(matchedId);
+	}
+	else{
+		res.status(404).send();
+	}
+
+	//to send 404
+	//res.status(404.send());
+
+	res.send('Asking for todo with id of '+ req.params.id);
+});
 
 app.listen(PORT, function(){
 	console.log('Express listening on port '+PORT+' !');
