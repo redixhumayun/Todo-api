@@ -45,44 +45,39 @@ app.get('/todos', function(req, res) {
 //GET /todos/:id
 app.get('/todos/:id', function(req, res) {
 	var todoId = parseInt(req.params.id, 10);
-	var matchedId = _.findWhere(todos, {
-		id: todoId
+	// var matchedId = _.findWhere(todos, {
+	// 	id: todoId
+	// });
+
+
+
+	// if (matchedId) {
+	// 	res.json(matchedId);
+	// } else {
+	// 	res.status(404).send();
+	// }
+
+	db.todo.findById(todoId).then(function(todo){
+		if(todo){
+			res.json(todo.toJSON());
+		}
+		else{
+			res.status(404).send();
+		}
 	});
 
-
-
-	if (matchedId) {
-		res.json(matchedId);
-	} else {
-		res.status(404).send();
-	}
-
-
-	res.send('Asking for todo with id of ' + req.params.id);
 });
 
 app.post('/todos', function(req, res) {
 
 	var body = _.pick(req.body, 'description', 'completed');
 
-	// if (!_.isBoolean(body.completed) || !_.isString(body.description) || body.description.trim().length === 0) {
-	// 	return res.status(400).send();
-	// }
-
-	// body.description = body.description.trim();
-
-
-	// body.id = todoNextId;
-
-	// res.json(body);
-	// todoNextId++;
-	// todos.push(body);
-	db.todo.create(body).then(function(todo){
-		console.log("This is todo: "+todo);
+	db.todo.create(body).then(function (todo){
 		res.json(todo.toJSON());
 	}, function(e){
 		res.status(400).json(e);
 	});
+
 });
 
 app.delete('/todos/:id', function(req, res) {
